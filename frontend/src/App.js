@@ -1,5 +1,10 @@
 import React, { useState } from "react";
+import {Router, Routes, Route, Link } from "react-router-dom";
 import MapView from "./MapView";
+import MapPage from "./MapPage";
+import Home from "./Home";
+import CommandPage from "./commandpage";
+import LiveCamPage from "./LiveCamPage";
 
 function App() {
   
@@ -8,6 +13,7 @@ function App() {
     { lat: 12.9718, lng: 77.5944 },
     { lat: 12.9715, lng: 77.5947 },
   ]);
+  
   const [alerts, setAlerts] = useState([
     "Obstacle detected at (12.9718,77.5944)",
     "Low battery warning",
@@ -28,15 +34,17 @@ function App() {
 
     return (
 <>
+      {/* Header */}
       <header className="fixed top-0 z-20 flex w-full items-center justify-between bg-blue-400 opacity-90 text-white p-2">
         <div className="flex items-center gap-1">
           <span>Farm Dashboard</span>
         </div>
 
         <div className="lg:text-base flex text-xs font-semibold max-md:hidden md:gap-3 lg:gap-5">
-          <button data-target="cover-1" className="navbar_btn">MAP</button>
-          <button data-target="aboutus" className="navbar_btn">COMMANDS</button>
-          <button data-target="industries" className="navbar_btn">LIVE-CAM</button>
+          <Link to="/" className="navbar_btn">HOME</Link>
+          <Link to="/map" className="navbar_btn">MAP</Link>
+          <Link to="/commands" className="navbar_btn">COMMANDS</Link>
+          <Link to="/live-cam" className="navbar_btn">LIVE-CAM</Link>
         </div>
 
         <div className="relative group">
@@ -44,6 +52,7 @@ function App() {
             <i class="fa-solid fa-bell"></i>
           </button>
 
+      {/*ALERTS*/}
           <div
             id="dropdownMenu"
             className="z-[9999] absolute text-black bg-white border border-blue-900 shadow-lg w-60 group-hover:block hidden right-0"
@@ -64,27 +73,66 @@ function App() {
 
       {/* Dashboard Content */}
       <div className="p-5 pt-24 "> {/* pt-24 to avoid content being hidden behind fixed header */}
-        <h1>MapView</h1>
 
-        <div className="relative z-0">
-          <MapView robotPosition={robotPosition} obstacles={obstacles} path={path} />
+      {/*ROBOT POSITION
+        <div className="mb-5">
+          <h2 className="text-blue-800">Robot Position:</h2>
+          <p>Latitude: {robotPosition.lat}</p>
+          <p>Longitude: {robotPosition.lng}</p>
         </div>
 
-        <div className="mt-5">
+      {/*OBSTACLES*}
+        <div className="mb-5">
+          <h2 className="text-blue-800">Obstacles:</h2>
+          <ul className="list-disc pl-5">
+            {obstacles.map((obs, i) => (
+              <li key={i}>Lat: {obs.lat}, Lng: {obs.lng}</li>
+            ))}
+          </ul>
+        </div>
+
+        PATH
+        <div className="mb-5">
+          <h2 className="text-blue-800">Path:</h2>
+          <ul className="list-disc pl-5">
+            {path.map((p, i) => (
+              <li key={i}>Lat: {p[0]}, Lng: {p[1]}</li>
+            ))}
+          </ul>
+        </div> */}
+
+        
+      {/*MAP*/}
+        {/* <div className="relative z-0">
+          <h1>MapView</h1>
+          <MapView robotPosition={robotPosition} obstacles={obstacles} path={path} />
+        </div> */}
+
+      {/* COMMANDS*/}
+        {/* <div className="mt-5">
           <button className="m-2 rounded-lg border-2 border-solid group hover:bg-green-500 backdrop-invert-50 p-3 max-md:hidden" onClick={simulateStart} style={{ marginRight: "10px" }}>
             Start Patrol
           </button>
           <button className="m-2 rounded-lg border-2 border-solid group hover:bg-green-500 backdrop-invert-50 p-3 max-md:hidden" onClick={simulateStop}>Stop Patrol</button>
-        </div>
+        </div> */}
 
-        <div className="mt-5">
+      {/*LIVE-CAM*/}
+        {/* <div className="mt-5">
           <h3 className="text-blue-800">Live Camera Feed:</h3>
           <img
             src="http://localhost:5000/video"
             alt="Live Feed"
             style={{ width: "50%", border: "1px solid #ccc" }}
           />
-        </div>
+        </div> */}
+        <div className="mt-5">
+          <Routes>
+            <Route path="/map" element={<MapPage robotPosition={robotPosition} obstacles={obstacles} path={path} />} />
+            <Route path="/" element={<Home/>} />
+            <Route path="/commands" element={<CommandPage simulateStart={simulateStart} simulateStop={simulateStop} />} />
+             <Route path="/live-cam" element={<LiveCamPage />} />
+          </Routes>
+          </div>
       </div>
     </>
   );
